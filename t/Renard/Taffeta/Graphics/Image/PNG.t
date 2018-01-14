@@ -24,14 +24,27 @@ my $gfx_png = Renard::Taffeta::Graphics::Image::PNG->new(
 
 subtest "Render to Cairo" => sub {
 	require Cairo;
-	my $surface = Cairo::ImageSurface->create ('argb32', 100, 100);
-	my $cr = Cairo::Context->create ($surface);
+	my $surface = Cairo::ImageSurface->create('argb32', 100, 100);
+	my $cr = Cairo::Context->create( $surface );
 
 	$gfx_png->render_cairo( $cr );
 
-	$surface->write_to_png('output.png');
+	my $png_surface = $gfx_png->cairo_image_surface;
+	my ($format, $width, $height) = (
+		$png_surface->get_format,
+		$png_surface->get_width,
+		$png_surface->get_height
+	);
 
-	ok -f 'output.png', 'file exists TODO';
+	# crop the original PNG out of the surface we rendered to
+	my $crop_surface = Cairo::ImageSurface->create($format, $width, $height);
+	my $crop_cr = Cairo::Context->create( $crop_surface );
+	$crop_cr->set_source_surface( $surface,
+		-( $gfx_png->position->x ), -( $gfx_png->position->y ) );
+	$crop_cr->paint;
+
+	is $png_surface->get_data, $crop_surface->get_data,
+		'the data from the original PNG is in the correct position';
 };
 
 subtest "Render to SVG" => sub {
