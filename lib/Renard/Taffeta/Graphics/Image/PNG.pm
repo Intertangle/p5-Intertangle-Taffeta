@@ -9,6 +9,11 @@ use MIME::Base64;
 
 extends qw(Renard::Taffeta::Graphics::Image);
 
+=attr data
+
+A C<Str> that contains the PNG binary data.
+
+=cut
 has data => (
 	is => 'ro',
 	isa => Str,
@@ -28,6 +33,11 @@ method _build_cairo_image_surface() :ReturnType(InstanceOf['Cairo::ImageSurface'
 	return $img;
 }
 
+=method render_svg
+
+See L<Renard::Taffeta::Graphics::Role::SVGRenderable>.
+
+=cut
 method render_svg( (SVG) $svg ) {
 	$svg->image(
 		x => $self->position->x,

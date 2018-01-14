@@ -7,6 +7,11 @@ use Renard::Incunabula::Common::Types qw(InstanceOf);
 
 extends qw(Renard::Taffeta::Graphics::Image);
 
+=attr data
+
+An L<Imager> image.
+
+=cut
 has data => (
 	is => 'ro',
 	isa => InstanceOf['Imager'],

@@ -1,3 +1,4 @@
+use Renard::Incunabula::Common::Setup;
 package Renard::Taffeta::Graphics::Image;
 # ABSTRACT: Graphics object for raster images
 
