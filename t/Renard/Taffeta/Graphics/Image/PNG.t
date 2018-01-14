@@ -54,7 +54,7 @@ subtest "Render to SVG" => sub {
 
 	$gfx_png->render_svg( $svg );
 
-	like $svg->xmlify, qr|data:image/png;base64,iVBOR|, 'XML has Base64 encoded PNG';
+	like $svg->xmlify, qr|data:image/png;base64,iVBORw0KGgo|, 'XML has Base64 encoded PNG';
 };
 
 done_testing;
