@@ -15,12 +15,20 @@ my $png_path = try {
 	plan skip_all => "$_";
 };
 
-plan tests => 2;
+plan tests => 3;
 
+my ($x, $y) = (30, 30);
 my $gfx_png = Renard::Taffeta::Graphics::Image::PNG->new(
 	data => $png_path->slurp_raw,
-	position => Renard::Yarn::Graphene::Point->new( x => 30, y => 30 ),
+	position => Renard::Yarn::Graphene::Point->new( x => $x, y => $y ),
 );
+
+subtest "Attributes" => sub {
+	is $gfx_png->position->x, $x, 'correct x position';
+	is $gfx_png->position->y, $y, 'correct y position';
+	is $gfx_png->bounds->width, 32, 'correct width';
+	is $gfx_png->bounds->height, 32, 'correct height';
+};
 
 subtest "Render to Cairo" => sub {
 	require Cairo;
