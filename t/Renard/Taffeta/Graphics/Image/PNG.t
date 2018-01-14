@@ -41,10 +41,7 @@ subtest "Render to SVG" => sub {
 
 	$gfx_png->render_svg( $svg );
 
-	note $svg->xmlify;
-	use Path::Tiny;
-	path('output.svg')->spew_utf8($svg->xmlify);
-	ok $svg->xmlify, 'xml works';
+	like $svg->xmlify, qr|data:image/png;base64,iVBOR|, 'XML has Base64 encoded PNG';
 };
 
 done_testing;
