@@ -5,6 +5,7 @@ package Renard::Taffeta::Graphics::Role::WithPosition;
 use Moo::Role;
 
 use Renard::Incunabula::Common::Types qw(InstanceOf);
+use Renard::Yarn::Types qw(Point);
 
 =attr position
 
@@ -14,7 +15,8 @@ graphics object.
 =cut
 has position => (
 	is => 'ro',
-	isa => InstanceOf['Renard::Yarn::Graphene::Point'],
+	isa => Point,
+	coerce => 1,
 	required => 1,
 );
 
