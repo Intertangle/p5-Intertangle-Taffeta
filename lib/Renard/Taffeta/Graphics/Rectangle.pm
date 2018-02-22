@@ -4,8 +4,20 @@ package Renard::Taffeta::Graphics::Rectangle;
 
 use Moo;
 
-use Renard::Incunabula::Common::Types qw(PositiveNum);
-use Renard::Taffeta::Types qw(CairoContext SVG);
+use Renard::Incunabula::Common::Types qw(InstanceOf);
+use Renard::Taffeta::Types qw(CairoContext SVG Dimension);
+
+has fill => (
+	is => 'ro',
+	predicate => 1,
+	isa => InstanceOf['Renard::Taffeta::Style::Fill'],
+);
+
+has stroke => (
+	is => 'ro',
+	predicate => 1,
+	isa => InstanceOf['Renard::Taffeta::Style::Stroke'],
+);
 
 =attr width
 
@@ -18,7 +30,7 @@ The height of the rectangle.
 =cut
 has [qw(width height)] => (
 	is => 'ro',
-	isa => PositiveNum,
+	isa => Dimension,
 	required => 1,
 );
 
@@ -35,13 +47,31 @@ See L<Renard::Taffeta::Graphics::Role::CairoRenderable>.
 
 =cut
 method render_cairo( (CairoContext) $cr ) {
-	$cr->rectangle(
-		$self->position->x,
-		$self->position->y,
-		$self->width,
-		$self->height,
-	);
-	$cr->fill;
+	my $create_path = sub {
+		$cr->rectangle(
+			$self->position->x,
+			$self->position->y,
+			$self->width,
+			$self->height,
+		);
+	};
+	if( $self->has_fill && ! $self->fill->is_fill_none ) {
+		$cr->set_source_rgba(
+			$self->fill->color->rgb_float_triple,
+			$self->fill->opacity);
+
+		$create_path->();
+		$cr->fill;
+	}
+	if( $self->has_stroke && ! $self->stroke->is_stroke_none ) {
+		$cr->set_line_width( $self->stroke->width );
+		$cr->set_source_rgba(
+			$self->stroke->color->rgb_float_triple,
+			$self->stroke->opacity);
+
+		$create_path->();
+		$cr->stroke;
+	}
 }
 
 =method render_svg
@@ -50,11 +80,22 @@ See L<Renard::Taffeta::Graphics::Role::SVGRenderable>.
 
 =cut
 method render_svg( (SVG) $svg ) {
+	my $style = {};
+
+	if( $self->has_fill ) {
+		$style = { %$style, %{ $self->fill->svg_style } };
+	}
+
+	if( $self->has_stroke ) {
+		$style = { %$style, %{ $self->stroke->svg_style } };
+	}
+
 	$svg->rectangle(
 		x => $self->position->x,
 		y => $self->position->y,
 		width => $self->width,
 		height => $self->height,
+		style => $style,
 	);
 }
 

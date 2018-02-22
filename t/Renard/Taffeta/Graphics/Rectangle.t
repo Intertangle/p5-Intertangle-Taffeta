@@ -5,12 +5,17 @@ use Test::Most tests => 3;
 use Renard::Incunabula::Common::Setup;
 use Renard::Taffeta::Graphics::Rectangle;
 use Renard::Yarn::Graphene;
+use Renard::Taffeta::Style::Fill;
+use Renard::Taffeta::Color::Named;
 
 my ($x, $y) = (10, 20);
 my ($width, $height) = (30, 40);
 my $gfx_rect = Renard::Taffeta::Graphics::Rectangle->new(
 	position => Renard::Yarn::Graphene::Point->new( x => $x, y => $y ),
 	width => $width, height => $height,
+	fill => Renard::Taffeta::Style::Fill->new(
+		color => Renard::Taffeta::Color::Named->new( name => 'svg:black' ),
+	),
 );
 
 subtest "Attributes" => sub {
