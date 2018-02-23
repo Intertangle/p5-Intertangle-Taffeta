@@ -1,3 +1,4 @@
+use Renard::Incunabula::Common::Setup;
 package Renard::Taffeta::Color::Named;
 # ABSTRACT: A named colour
 
