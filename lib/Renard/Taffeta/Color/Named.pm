@@ -8,6 +8,15 @@ use Renard::Taffeta::Types qw(ColorLibrary RGB24Value);
 
 extends qw(Renard::Taffeta::Color);
 
+=attr name
+
+The name for the color as a C<ColorLibrary> type.
+
+This can be coerced from a string:
+
+  Renard::Taffeta::Color::Named->new( name => 'svg:blue' );
+
+=cut
 has name => (
 	is => 'ro',
 	required => 1,
