@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
 
-use Test::Most tests => 1;
+use Test::Most tests => 2;
 use Renard::Incunabula::Devel::TestHelper;
 use Renard::Incunabula::Common::Setup;
 
@@ -22,6 +22,15 @@ subtest "Build RGB24 using value" => sub {
 			"$test->{value} gives $test->{svg}",
 		);
 	}
+};
+
+subtest "Build RGB24 using components" => sub {
+	my $rgb24 = Renard::Taffeta::Color::RGB24->new( r8 => 50, g8 => 25, b8 => 0 );
+	is $rgb24->r8, 50;
+	is $rgb24->g8, 25;
+	is $rgb24->b8,  0;
+
+	is $rgb24->value, ( 50 << 16 ) + ( 25 << 8 );
 };
 
 done_testing;

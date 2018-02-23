@@ -9,6 +9,7 @@ use Type::Library 0.008 -base,
 
 		ColorLibrary
 		RGB24Value
+		RGB24Component
 		RGBFloatComponentValue
 		Color
 
@@ -52,12 +53,21 @@ coerce "ColorLibrary",
 
 =type RGB24Value
 
-A valid RGB value between 0 and 0xFFFFFF.
+A valid RGB value between C<0> and C<0xFFFFFF>.
 
 =cut
 declare RGB24Value =>
 	as PositiveOrZeroInt,
 	where { $_ <= 0xFFFFFF };
+
+=type RGB24Component
+
+A valid component of a C<RGB24Value> between C<0> and C<0xFF>.
+
+=cut
+declare RGB24Component =>
+	as PositiveOrZeroInt,
+	where { $_ <= 0xFF };
 
 =type RGBFloatComponentValue
 
