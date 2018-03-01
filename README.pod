@@ -10,6 +10,10 @@ Renard::Taffeta - Low-level graphics layer
 
 version 0.001
 
+=head1 SEE ALSO
+
+L<Repository information|http://project-renard.github.io/doc/development/repo/p5-Renard-Taffeta/>
+
 =head1 AUTHOR
 
 Project Renard
