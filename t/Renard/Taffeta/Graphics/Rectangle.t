@@ -19,8 +19,8 @@ my $gfx_rect = Renard::Taffeta::Graphics::Rectangle->new(
 );
 
 subtest "Attributes" => sub {
-	is $gfx_rect->bounds->width, $width, 'check width';
-	is $gfx_rect->bounds->height, $height, 'check height';
+	is $gfx_rect->size->width, $width, 'check width';
+	is $gfx_rect->size->height, $height, 'check height';
 };
 
 subtest "Cairo" => sub {

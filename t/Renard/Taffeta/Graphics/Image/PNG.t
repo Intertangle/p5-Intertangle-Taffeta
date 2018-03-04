@@ -26,8 +26,8 @@ my $gfx_png = Renard::Taffeta::Graphics::Image::PNG->new(
 subtest "Attributes" => sub {
 	is $gfx_png->position->x, $x, 'correct x position';
 	is $gfx_png->position->y, $y, 'correct y position';
-	is $gfx_png->bounds->width, 32, 'correct width';
-	is $gfx_png->bounds->height, 32, 'correct height';
+	is $gfx_png->size->width, 32, 'correct width';
+	is $gfx_png->size->height, 32, 'correct height';
 };
 
 subtest "Render to Cairo" => sub {

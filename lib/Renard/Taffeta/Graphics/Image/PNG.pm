@@ -34,7 +34,7 @@ method _build_cairo_image_surface() :ReturnType(InstanceOf['Cairo::ImageSurface'
 	return $img;
 }
 
-method _build_bounds() :ReturnType(InstanceOf['Renard::Yarn::Graphene::Size']) {
+method _build_size() :ReturnType(InstanceOf['Renard::Yarn::Graphene::Size']) {
 	my ($width, $height, $id_or_error) = Image::Size::imgsize( \($self->data) );
 	die "Could not compute bounds: $id_or_error" unless $id_or_error eq 'PNG';
 	Renard::Yarn::Graphene::Size->new(

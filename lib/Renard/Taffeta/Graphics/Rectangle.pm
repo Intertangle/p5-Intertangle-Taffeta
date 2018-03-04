@@ -22,7 +22,7 @@ has [qw(width height)] => (
 	required => 1,
 );
 
-method _build_bounds() {
+method _build_size() {
 	Renard::Yarn::Graphene::Size->new(
 		width => $self->width,
 		height => $self->height,
