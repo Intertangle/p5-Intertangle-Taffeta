@@ -7,6 +7,16 @@ use Renard::Incunabula::Common::Types qw(InstanceOf Str Bool);
 use Renard::Yarn::Graphene;
 use List::AllUtils qw(all);
 
+method compose( $transform ) {
+	Renard::Taffeta::Transform::Affine2D->new(
+		matrix => ( $self->matrix x $transform->matrix ),
+	);
+}
+
+method apply_to_bounds( $bounds ) {
+	$self->matrix->transform_bounds( $bounds );
+}
+
 =attr matrix
 
 
