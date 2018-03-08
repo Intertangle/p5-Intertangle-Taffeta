@@ -82,21 +82,20 @@ method render_svg( (SVG) $svg ) {
 		$style = { %$style, %{ $self->stroke->svg_style } };
 	}
 
-	my $parent_tag = $svg;
-
+	my %transform_args = ();
 	if( ! $self->transform->is_identity ) {
-		$parent_tag = $svg->group(
+		%transform_args = (
 			transform => $self->transform->svg_transform,
 		);
 	}
 
-
-	$parent_tag->rectangle(
+	$svg->rectangle(
 		x => $self->origin->x,
 		y => $self->origin->y,
 		width => $self->width,
 		height => $self->height,
 		style => $style,
+		%transform_args,
 	);
 }
 
