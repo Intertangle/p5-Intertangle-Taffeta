@@ -122,16 +122,21 @@ lazy cairo_matrix => method() {
 	require Cairo;
 
 	my (
+		$is_2d_affine,
 		$xx, $yx,
 		$xy, $yy,
 		$x0, $y0
 	) = $self->matrix->to_2d;
 
-	my $cairo_matrix = Cairo::Matrix::init(
+	die "Not a 2D affine matrix" unless $is_2d_affine;
+
+	my $cairo_matrix = Cairo::Matrix->init(
 		$xx, $yx,
 		$xy, $yy,
 		$x0, $y0
 	);
+
+	$cairo_matrix;
 }, isa => InstanceOf['Cairo::Matrix'];
 
 =attr svg_transform
@@ -144,7 +149,7 @@ lazy svg_transform => method() {
 	# | b d f |
 	# \ 0 0 1 /
 	my (
-		$bool,
+		$is_2d_affine,
 		$xx, $yx,  # a c
 		$xy, $yy,  # b d
 
@@ -152,7 +157,7 @@ lazy svg_transform => method() {
 		$y0   # f
 	) = $self->matrix->to_2d;
 
-	die "Not an affine matrix" unless $bool;
+	die "Not a 2D affine matrix" unless $is_2d_affine;
 
 	my (
 	$m_a , $m_c,
