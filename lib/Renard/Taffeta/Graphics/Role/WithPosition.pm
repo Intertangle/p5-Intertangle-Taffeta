@@ -12,12 +12,14 @@ use Renard::Yarn::Types qw(Point);
 A C<Renard::Yarn::Graphene::Point> representing the top-left position for a
 graphics object.
 
+The default is at the origin.
+
 =cut
 has position => (
 	is => 'ro',
 	isa => Point,
 	coerce => 1,
-	required => 1,
+	default => sub { Renard::Yarn::Graphene::Point->new( x => 0, y => 0 ) },
 );
 
 1;
