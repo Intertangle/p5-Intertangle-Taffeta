@@ -37,12 +37,15 @@ See L<Renard::Taffeta::Graphics::Role::CairoRenderable>.
 method render_cairo( (CairoContext) $cr ) {
 	my $create_path = sub {
 		$cr->rectangle(
-			$self->position->x,
-			$self->position->y,
+			$self->origin->x,
+			$self->origin->y,
 			$self->width,
 			$self->height,
 		);
 	};
+	$cr->set_matrix(
+		$self->transform->cairo_matrix
+	);
 	if( $self->has_fill && ! $self->fill->is_fill_none ) {
 		$cr->set_source_rgba(
 			$self->fill->color->rgb_float_triple,
@@ -60,6 +63,7 @@ method render_cairo( (CairoContext) $cr ) {
 		$create_path->();
 		$cr->stroke;
 	}
+	$cr->identity_matrix;
 }
 
 =method render_svg
@@ -78,9 +82,18 @@ method render_svg( (SVG) $svg ) {
 		$style = { %$style, %{ $self->stroke->svg_style } };
 	}
 
-	$svg->rectangle(
-		x => $self->position->x,
-		y => $self->position->y,
+	my $parent_tag = $svg;
+
+	if( ! $self->transform->is_identity ) {
+		$parent_tag = $svg->group(
+			transform => $self->transform->svg_transform,
+		);
+	}
+
+
+	$parent_tag->rectangle(
+		x => $self->origin->x,
+		y => $self->origin->y,
 		width => $self->width,
 		height => $self->height,
 		style => $style,
@@ -88,9 +101,9 @@ method render_svg( (SVG) $svg ) {
 }
 
 with qw(
-	Renard::Taffeta::Graphics::Role::WithPosition
 	Renard::Taffeta::Graphics::Role::WithBounds
 	Renard::Taffeta::Graphics::Role::WithFill
+	Renard::Taffeta::Graphics::Role::WithTransform
 	Renard::Taffeta::Graphics::Role::WithStroke
 	Renard::Taffeta::Graphics::Role::CairoRenderable
 	Renard::Taffeta::Graphics::Role::SVGRenderable
