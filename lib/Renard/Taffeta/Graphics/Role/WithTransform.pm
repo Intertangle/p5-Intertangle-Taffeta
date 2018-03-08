@@ -5,6 +5,11 @@ package Renard::Taffeta::Graphics::Role::WithTransform;
 use Mu::Role;
 use Renard::Taffeta::Transform::Affine2D;
 
+=attr transform
+
+The transform to apply.
+
+=cut
 has transform => (
 	is => 'ro',
 	default => sub {

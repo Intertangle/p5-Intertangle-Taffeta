@@ -7,18 +7,31 @@ use Renard::Incunabula::Common::Types qw(InstanceOf Str Bool);
 use Renard::Yarn::Graphene;
 use List::AllUtils qw(all);
 
+=method compose
+
+Compose the transform with another transform by using matrix multiplication.
+
+=cut
 method compose( $transform ) {
 	Renard::Taffeta::Transform::Affine2D->new(
 		matrix => ( $self->matrix x $transform->matrix ),
 	);
 }
 
+=method apply_to_bounds
+
+Apply the transformation to a C<Renard::Yarn::Graphene::Rect>.
+
+=cut
 method apply_to_bounds( $bounds ) {
 	$self->matrix->transform_bounds( $bounds );
 }
 
 =attr matrix
 
+The C<Renard::Yarn::Graphene::Matrix> matrix representing the affine transform.
+
+This matrix is the identity matrix by default.
 
 =cut
 has matrix => (
@@ -125,7 +138,7 @@ around BUILDARGS => fun( $orig, $class, %args ) {
 
 =attr cairo_matrix
 
-TODO
+A C<Cairo::Matrix> representation of the affine transform.
 
 =cut
 lazy cairo_matrix => method() {
@@ -151,7 +164,11 @@ lazy cairo_matrix => method() {
 
 =attr svg_transform
 
-TODO
+A C<Str> representation of the affine transform that can be used with
+C<transform> attribute for SVG elements such as C<< <g> >> or graphics
+elements.
+
+See L<https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/transform>.
 
 =cut
 lazy svg_transform => method() {
