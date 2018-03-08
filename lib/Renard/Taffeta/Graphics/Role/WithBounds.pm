@@ -6,19 +6,20 @@ use Moo::Role;
 use Renard::Yarn::Graphene;
 
 use Renard::Incunabula::Common::Types qw(InstanceOf);
+use Renard::Yarn::Types qw(Point Size);
 
-=attr bounds
+=attr identity_bounds
 
 A C<Renard::Yarn::Graphene::Rect> that represents the bounds of this graphics
-object.
+object when the transform is the identity matrix.
 
 =cut
-has bounds => (
-	is => 'lazy', # _build_bounds
+has identity_bounds => (
+	is => 'lazy', # _build_identity_bounds
 	isa => InstanceOf['Renard::Yarn::Graphene::Rect'],
 );
 
-method _build_bounds() {
+method _build_identity_bounds() {
 	Renard::Yarn::Graphene::Rect->new(
 		origin => $self->origin,
 		size   => $self->size,
@@ -27,25 +28,28 @@ method _build_bounds() {
 
 =attr origin
 
-A C<Renard::Yarn::Graphene::Point> that represents the origin of this graphics
+A C<Point> that represents the origin of this graphics
 object.
+
+The default is at C<(0, 0)>.
 
 =cut
 has origin => (
 	is => 'ro',
-	isa => InstanceOf['Renard::Yarn::Graphene::Point'],
+	isa => Point,
+	coerce => 1,
 	default => sub { Renard::Yarn::Graphene::Point->new( x => 0, y => 0 ) },
 );
 
 =attr size
 
-A C<Renard::Yarn::Graphene::Size> that represents the size of this graphics
+A C<Size> that represents the size of this graphics
 object.
 
 =cut
 has size => (
 	is => 'lazy', # _build_size
-	isa => InstanceOf['Renard::Yarn::Graphene::Size'],
+	isa => Size,
 );
 
 1;
