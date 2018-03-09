@@ -4,6 +4,7 @@ package Renard::Taffeta::Transform::Affine2D;
 
 use Mu;
 use Renard::Incunabula::Common::Types qw(InstanceOf Str Bool);
+use Renard::Yarn::Types qw(Point);
 use Renard::Yarn::Graphene;
 use List::AllUtils qw(all);
 
@@ -25,6 +26,15 @@ Apply the transformation to a C<Renard::Yarn::Graphene::Rect>.
 =cut
 method apply_to_bounds( $bounds ) {
 	$self->matrix->transform_bounds( $bounds );
+}
+
+=method apply_to_point
+
+Apply the transformation to a C<Renard::Yarn::Graphene::Point>.
+
+=cut
+method apply_to_point( (Point->coercibles) $point ) {
+	$self->matrix->transform_point( Point->coerce($point) );
 }
 
 =attr matrix
