@@ -135,11 +135,9 @@ around BUILDARGS => fun( $orig, $class, %args ) {
 				$args{matrix_xy}{x0} // 0,
 				$args{matrix_xy}{y0} // 0,
 			);
-		} else {
-			die "Unknown args: @{[ %args ]}";
 		}
 
-		$args{matrix} = $matrix;
+		$args{matrix} = $matrix if defined $matrix;
 	}
 
 
