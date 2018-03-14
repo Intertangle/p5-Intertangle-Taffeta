@@ -10,12 +10,23 @@ use List::AllUtils qw(all);
 
 =method compose
 
-Compose the transform with another transform by using matrix multiplication.
+Compose the transform with another transform by using matrix multiplication: (C<this x that>).
 
 =cut
 method compose( $transform ) {
 	Renard::Taffeta::Transform::Affine2D->new(
 		matrix => ( $self->matrix x $transform->matrix ),
+	);
+}
+
+=method compose_premultiply
+
+Compose the transform with another transform by using matrix multiplication: (C<that x this>).
+
+=cut
+method compose_premultiply( $transform ) {
+	Renard::Taffeta::Transform::Affine2D->new(
+		matrix => ( $transform->matrix x $self->matrix ),
 	);
 }
 
