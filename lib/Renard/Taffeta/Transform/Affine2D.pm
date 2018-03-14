@@ -48,6 +48,15 @@ method apply_to_point( (Point->coercibles) $point ) {
 	$self->matrix->transform_point( Point->coerce($point) );
 }
 
+=method apply_to_vec3
+
+Apply the transformation to a C<Renard::Yarn::Graphene::Vec3>.
+
+=cut
+method apply_to_vec3( $vec ) {
+	$self->matrix->transform_vec3( $vec );
+}
+
 =attr matrix
 
 The C<Renard::Yarn::Graphene::Matrix> matrix representing the affine transform.
