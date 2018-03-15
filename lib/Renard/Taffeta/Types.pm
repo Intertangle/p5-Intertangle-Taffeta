@@ -32,11 +32,11 @@ class_type "CairoContext",
 
 =type SVG
 
-A type for any reference that extends L<SVG>.
+A type for any reference that extends L<SVG::Element>.
 
 =cut
 class_type "SVG",
-	{ class => "SVG" };
+	{ class => "SVG::Element" };
 
 =type ColorLibrary
 
