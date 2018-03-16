@@ -8,55 +8,6 @@ use Renard::Yarn::Types qw(Point);
 use Renard::Yarn::Graphene;
 use List::AllUtils qw(all);
 
-=method compose
-
-Compose the transform with another transform by using matrix multiplication: (C<this x that>).
-
-=cut
-method compose( $transform ) {
-	Renard::Taffeta::Transform::Affine2D->new(
-		matrix => ( $self->matrix x $transform->matrix ),
-	);
-}
-
-=method compose_premultiply
-
-Compose the transform with another transform by using matrix multiplication: (C<that x this>).
-
-=cut
-method compose_premultiply( $transform ) {
-	Renard::Taffeta::Transform::Affine2D->new(
-		matrix => ( $transform->matrix x $self->matrix ),
-	);
-}
-
-=method apply_to_bounds
-
-Apply the transformation to a C<Renard::Yarn::Graphene::Rect>.
-
-=cut
-method apply_to_bounds( $bounds ) {
-	$self->matrix->transform_bounds( $bounds );
-}
-
-=method apply_to_point
-
-Apply the transformation to a C<Renard::Yarn::Graphene::Point>.
-
-=cut
-method apply_to_point( (Point->coercibles) $point ) {
-	$self->matrix->transform_point( Point->coerce($point) );
-}
-
-=method apply_to_vec3
-
-Apply the transformation to a C<Renard::Yarn::Graphene::Vec3>.
-
-=cut
-method apply_to_vec3( $vec ) {
-	$self->matrix->transform_vec3( $vec );
-}
-
 =attr matrix
 
 The C<Renard::Yarn::Graphene::Matrix> matrix representing the affine transform.
@@ -73,6 +24,81 @@ has matrix => (
 		$m;
 	},
 );
+
+=attr cairo_matrix
+
+A C<Cairo::Matrix> representation of the affine transform.
+
+=cut
+lazy cairo_matrix => method() {
+	require Cairo;
+
+	my (
+		$is_2d_affine,
+		$xx, $yx,
+		$xy, $yy,
+		$x0, $y0
+	) = $self->matrix->to_2d;
+
+	die "Not a 2D affine matrix" unless $is_2d_affine;
+
+	my $cairo_matrix = Cairo::Matrix->init(
+		$xx, $yx,
+		$xy, $yy,
+		$x0, $y0
+	);
+
+	$cairo_matrix;
+}, isa => InstanceOf['Cairo::Matrix'];
+
+=attr svg_transform
+
+A C<Str> representation of the affine transform that can be used with
+C<transform> attribute for SVG elements such as C<< <g> >> or graphics
+elements.
+
+See L<https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/transform>.
+
+=cut
+lazy svg_transform => method() {
+	# / a c e \
+	# | b d f |
+	# \ 0 0 1 /
+	my (
+		$is_2d_affine,
+		$xx, $yx,  # a c
+		$xy, $yy,  # b d
+
+		$x0,  # e
+		$y0   # f
+	) = $self->matrix->to_2d;
+
+	die "Not a 2D affine matrix" unless $is_2d_affine;
+
+	my (
+	$m_a , $m_c,
+	$m_b , $m_d,
+
+	$m_e,
+	$m_f
+	) = (
+		$xx, $yx,
+		$xy, $yy,
+
+		$x0,
+		$y0
+	);
+
+	return sprintf("matrix(%f, %f, %f, %f, %f, %f)",
+		$m_a, $m_b,
+		$m_c, $m_d,
+		$m_e, $m_f,
+	);
+}, isa => Str;
+
+lazy is_identity => method() {
+	$self->matrix->is_identity;
+}, isa => Bool;
 
 =method BUILDARGS
 
@@ -164,80 +190,54 @@ around BUILDARGS => fun( $orig, $class, %args ) {
 	return $class->$orig(%args);
 };
 
-=attr cairo_matrix
+=method compose
 
-A C<Cairo::Matrix> representation of the affine transform.
-
-=cut
-lazy cairo_matrix => method() {
-	require Cairo;
-
-	my (
-		$is_2d_affine,
-		$xx, $yx,
-		$xy, $yy,
-		$x0, $y0
-	) = $self->matrix->to_2d;
-
-	die "Not a 2D affine matrix" unless $is_2d_affine;
-
-	my $cairo_matrix = Cairo::Matrix->init(
-		$xx, $yx,
-		$xy, $yy,
-		$x0, $y0
-	);
-
-	$cairo_matrix;
-}, isa => InstanceOf['Cairo::Matrix'];
-
-=attr svg_transform
-
-A C<Str> representation of the affine transform that can be used with
-C<transform> attribute for SVG elements such as C<< <g> >> or graphics
-elements.
-
-See L<https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/transform>.
+Compose the transform with another transform by using matrix multiplication: (C<this x that>).
 
 =cut
-lazy svg_transform => method() {
-	# / a c e \
-	# | b d f |
-	# \ 0 0 1 /
-	my (
-		$is_2d_affine,
-		$xx, $yx,  # a c
-		$xy, $yy,  # b d
-
-		$x0,  # e
-		$y0   # f
-	) = $self->matrix->to_2d;
-
-	die "Not a 2D affine matrix" unless $is_2d_affine;
-
-	my (
-	$m_a , $m_c,
-	$m_b , $m_d,
-
-	$m_e,
-	$m_f
-	) = (
-		$xx, $yx,
-		$xy, $yy,
-
-		$x0,
-		$y0
+method compose( $transform ) {
+	Renard::Taffeta::Transform::Affine2D->new(
+		matrix => ( $self->matrix x $transform->matrix ),
 	);
+}
 
-	return sprintf("matrix(%f, %f, %f, %f, %f, %f)",
-		$m_a, $m_b,
-		$m_c, $m_d,
-		$m_e, $m_f,
+=method compose_premultiply
+
+Compose the transform with another transform by using matrix multiplication: (C<that x this>).
+
+=cut
+method compose_premultiply( $transform ) {
+	Renard::Taffeta::Transform::Affine2D->new(
+		matrix => ( $transform->matrix x $self->matrix ),
 	);
-}, isa => Str;
+}
 
-lazy is_identity => method() {
-	$self->matrix->is_identity;
-}, isa => Bool;
+=method apply_to_bounds
+
+Apply the transformation to a C<Renard::Yarn::Graphene::Rect>.
+
+=cut
+method apply_to_bounds( $bounds ) {
+	$self->matrix->transform_bounds( $bounds );
+}
+
+=method apply_to_point
+
+Apply the transformation to a C<Renard::Yarn::Graphene::Point>.
+
+=cut
+method apply_to_point( (Point->coercibles) $point ) {
+	$self->matrix->transform_point( Point->coerce($point) );
+}
+
+=method apply_to_vec3
+
+Apply the transformation to a C<Renard::Yarn::Graphene::Vec3>.
+
+=cut
+method apply_to_vec3( $vec ) {
+	$self->matrix->transform_vec3( $vec );
+}
 
 
 1;
