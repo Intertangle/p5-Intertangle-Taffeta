@@ -4,7 +4,6 @@ package Renard::Taffeta::Graphics::Rectangle;
 
 use Moo;
 
-use Renard::Incunabula::Common::Types qw(InstanceOf);
 use Renard::Taffeta::Types qw(CairoContext SVG Dimension);
 
 =attr width

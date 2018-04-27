@@ -4,7 +4,6 @@ use Test::Most tests => 1;
 use Renard::Incunabula::Common::Setup;
 use Renard::Taffeta::Transform::Affine2D::Translation;
 
-use Carp::Always;
 subtest "Build an affine translation" => sub {
 	my $translate = Renard::Taffeta::Transform::Affine2D::Translation->new(
 		translate => [2, 4],
