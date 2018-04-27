@@ -136,56 +136,75 @@ matrix are used:
 around BUILDARGS => fun( $orig, $class, %args ) {
 	my $matrix;
 
-	if( keys %args > 1 ) {
-		die "Can not use multiple approaches to construct matrix";
-	} elsif( keys %args == 1 ) {
-		if( exists $args{matrix} ) {
-			my $ma = $args{matrix}->to_ArrayRef;
-			# NOTE this uses exact checking instead of floating point
-			# approximation. This should be fine because these are values
-			# that are set by the user.
-			unless(
-				(
-					all { $_ == 0 } (
-						$ma->[0][2], $ma->[0][3],
-						$ma->[1][2], $ma->[1][3],
-						$ma->[2][0], $ma->[2][1],
-						$ma->[3][2], $ma->[2][3],
-					)
-				)
-				&&
-				(
-					all { $_ == 1 } (
-						$ma->[2][2], $ma->[3][3],
-					)
-				)
-			) {
-				die "Not a 2D affine transform matrix";
-			}
-			$matrix = $args{matrix};
-		} elsif( exists $args{matrix_abcdef} ) {
-			$matrix = Renard::Yarn::Graphene::Matrix->new;
-			$matrix->init_from_2d(
-				$args{matrix_abcdef}{a} // 1, $args{matrix_abcdef}{c} // 0,
-				$args{matrix_abcdef}{b} // 0, $args{matrix_abcdef}{d} // 1,
+	my $matrix_set = 0;
 
-				$args{matrix_abcdef}{e} // 0 , $args{matrix_abcdef}{f} // 0,
-			);
-		} elsif( exists $args{matrix_xy} ) {
-			$matrix = Renard::Yarn::Graphene::Matrix->new;
-			$matrix->init_from_2d(
-				$args{matrix_xy}{xx} // 1,
-				$args{matrix_xy}{yx} // 0,
-				$args{matrix_xy}{xy} // 0,
-				$args{matrix_xy}{yy} // 1,
-				$args{matrix_xy}{x0} // 0,
-				$args{matrix_xy}{y0} // 0,
-			);
+	if( exists $args{matrix} ) {
+		if( $matrix_set ) {
+			die "Can not use multiple approaches to construct matrix";
+		} else {
+			$matrix_set = 1;
 		}
 
-		$args{matrix} = $matrix if defined $matrix;
+		my $ma = $args{matrix}->to_ArrayRef;
+		# NOTE this uses exact checking instead of floating point
+		# approximation. This should be fine because these are values
+		# that are set by the user.
+		unless(
+			(
+				all { $_ == 0 } (
+					$ma->[0][2], $ma->[0][3],
+					$ma->[1][2], $ma->[1][3],
+					$ma->[2][0], $ma->[2][1],
+					$ma->[3][2], $ma->[2][3],
+				)
+			)
+			&&
+			(
+				all { $_ == 1 } (
+					$ma->[2][2], $ma->[3][3],
+				)
+			)
+		) {
+			die "Not a 2D affine transform matrix";
+		}
+		$matrix = $args{matrix};
 	}
 
+	if( exists $args{matrix_abcdef} ) {
+		if( $matrix_set ) {
+			die "Can not use multiple approaches to construct matrix";
+		} else {
+			$matrix_set = 1;
+		}
+
+		$matrix = Renard::Yarn::Graphene::Matrix->new;
+		$matrix->init_from_2d(
+			$args{matrix_abcdef}{a} // 1, $args{matrix_abcdef}{c} // 0,
+			$args{matrix_abcdef}{b} // 0, $args{matrix_abcdef}{d} // 1,
+
+			$args{matrix_abcdef}{e} // 0 , $args{matrix_abcdef}{f} // 0,
+		);
+	}
+
+	if( exists $args{matrix_xy} ) {
+		if( $matrix_set ) {
+			die "Can not use multiple approaches to construct matrix";
+		} else {
+			$matrix_set = 1;
+		}
+
+		$matrix = Renard::Yarn::Graphene::Matrix->new;
+		$matrix->init_from_2d(
+			$args{matrix_xy}{xx} // 1,
+			$args{matrix_xy}{yx} // 0,
+			$args{matrix_xy}{xy} // 0,
+			$args{matrix_xy}{yy} // 1,
+			$args{matrix_xy}{x0} // 0,
+			$args{matrix_xy}{y0} // 0,
+		);
+	}
+
+	$args{matrix} = $matrix if defined $matrix;
 
 	return $class->$orig(%args);
 };
