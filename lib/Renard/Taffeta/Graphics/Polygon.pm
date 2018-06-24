@@ -29,7 +29,7 @@ method render_cairo( (CairoContext) $cr ) {
 	my $create_path = sub {
 		my @pts = @{ $self->points };
 		$cr->move_to( $pts[0]->x, $pts[0]->y );
-		for my $pt_idx (1..@pts-1, -1) {
+		for my $pt_idx (1..@pts-1) {
 			$cr->line_to(
 				$pts[$pt_idx]->x,
 				$pts[$pt_idx]->y,
