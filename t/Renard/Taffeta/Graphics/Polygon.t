@@ -1,6 +1,9 @@
 #!/usr/bin/env perl
 
 use Test::Most tests => 2;
+use lib 't/lib';
+use TestHelper;
+use List::AllUtils qw(sum);
 
 use Renard::Incunabula::Common::Setup;
 use Renard::Taffeta::Graphics::Polygon;
@@ -24,18 +27,16 @@ my $gfx_poly = Renard::Taffeta::Graphics::Polygon->new(
 subtest 'Cairo' => sub {
 	require Cairo;
 	my ($s_width, $s_height) = (200, 200);
-	my $surface = Cairo::ImageSurface->create('argb32', $s_width, $s_height);
-	my $cr = Cairo::Context->create( $surface );
-
-	$gfx_poly->render_cairo( $cr );
-
-	my @data = unpack 'L*', $surface->get_data; # uint32_t
-	use List::AllUtils qw(count_by sum);
-	my %counts = count_by { $_ } @data;
+	my $data = TestHelper->cairo(
+		render => $gfx_poly,
+		width => $s_width,
+		height => $s_height,
+	);
 
 	# triangle area
 	my $area = 0.5 * $width * $height;
 
+	my %counts = %{ $data->{counts} };
 	# anti-aliasing
 	my $marked = delete $counts{0 + 0xFF000000};
 	my $unmarked = delete $counts{0};
@@ -48,11 +49,11 @@ subtest 'Cairo' => sub {
 };
 
 subtest "SVG" => sub {
-	require SVG;
-	SVG->import;
-	my $svg = SVG->new( width => 200, height => 200 );
-
-	$gfx_poly->render_svg( $svg );
+	my $svg = TestHelper->svg(
+		render => $gfx_poly,
+		width => 200,
+		height => 200
+	);
 
 	like $svg->xmlify, qr|<polygon [^>]*>|, 'XML has <polygon>';
 };
