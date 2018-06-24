@@ -42,22 +42,6 @@ See L<Renard::Taffeta::Graphics::Role::SVGRenderable>.
 
 =cut
 method render_svg( (SVG) $svg ) {
-	my $style = {};
-
-	if( $self->has_fill ) {
-		$style = { %$style, %{ $self->fill->svg_style } };
-	}
-
-	if( $self->has_stroke ) {
-		$style = { %$style, %{ $self->stroke->svg_style } };
-	}
-
-	my %transform_args = ();
-	if( ! $self->transform->is_identity ) {
-		%transform_args = (
-			transform => $self->transform->svg_transform,
-		);
-	}
 
 	my $path = $svg->get_path(
 		x => [ map { $_->x } @{ $self->points } ],
@@ -66,8 +50,8 @@ method render_svg( (SVG) $svg ) {
 	);
 	$svg->polygon(
 		%$path,
-		style => $style,
-		%transform_args,
+		$self->svg_style_parameter,
+		$self->svg_transform_parameter,
 	);
 }
 
@@ -78,6 +62,8 @@ with qw(
 	Renard::Taffeta::Graphics::Role::WithStroke
 	Renard::Taffeta::Graphics::Role::CairoRenderable::WithCairoPath
 	Renard::Taffeta::Graphics::Role::SVGRenderable
+	Renard::Taffeta::Graphics::Role::SVGRenderable::Style
+	Renard::Taffeta::Graphics::Role::SVGRenderable::Transform
 );
 
 1;
