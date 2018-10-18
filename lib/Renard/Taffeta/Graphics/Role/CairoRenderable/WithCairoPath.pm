@@ -23,9 +23,12 @@ See L<Renard::Taffeta::Graphics::Role::CairoRenderable>.
 
 =cut
 method render_cairo( (CairoContext) $cr ) {
+	$cr->save;
+
 	$cr->set_matrix(
 		$self->transform->cairo_matrix
 	);
+
 	if( $self->has_fill && ! $self->fill->is_fill_none ) {
 		$cr->set_source_rgba(
 			$self->fill->color->rgb_float_triple,
@@ -43,7 +46,8 @@ method render_cairo( (CairoContext) $cr ) {
 		$self->cairo_path( $cr );
 		$cr->stroke;
 	}
-	$cr->identity_matrix;
+
+	$cr->restore;
 }
 
 with qw(
