@@ -53,6 +53,7 @@ method render_svg( (SVG) $svg ) {
 		x => $self->origin->x,
 		y => $self->origin->y,
 		'-href' => "data:image/png;base64,@{[ encode_base64( $self->data ) ]}",
+		$self->svg_transform_parameter,
 	);
 }
 
@@ -60,6 +61,8 @@ with qw(
 	Renard::Taffeta::Graphics::Image::Role::FromCairoImageSurface
 	Renard::Taffeta::Graphics::Role::SVGRenderable
 	Renard::Taffeta::Graphics::Role::WithBounds
+	Renard::Taffeta::Graphics::Role::WithTransform
+	Renard::Taffeta::Graphics::Role::SVGRenderable::Transform
 );
 
 1;
