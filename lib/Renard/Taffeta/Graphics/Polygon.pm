@@ -8,6 +8,8 @@ use Renard::Incunabula::Common::Types qw(ArrayRef);
 use Renard::Yarn::Types qw(Point);
 use Renard::Taffeta::Types qw(CairoContext SVG);
 
+use List::AllUtils qw(minmax);
+
 =attr points
 
 An C<ArrayRef> of points.
@@ -19,6 +21,16 @@ has points => (
 	required => 1,
 	coerce => 1,
 );
+
+method _build_size() {
+	my ($min_x, $max_x) = minmax map { $_->x } @{ $self->points };
+	my ($min_y, $max_y) = minmax map { $_->y } @{ $self->points };
+
+	Renard::Yarn::Graphene::Size->new(
+		width => $max_x - $min_x,
+		height => $max_y - $min_y,
+	);
+}
 
 =method cairo_path
 
@@ -42,12 +54,12 @@ See L<Renard::Taffeta::Graphics::Role::SVGRenderable>.
 
 =cut
 method render_svg( (SVG) $svg ) {
-
 	my $path = $svg->get_path(
 		x => [ map { $_->x } @{ $self->points } ],
 		y => [ map { $_->y } @{ $self->points } ],
 		-type => 'polygon',
 	);
+
 	$svg->polygon(
 		%$path,
 		$self->svg_style_parameter,
