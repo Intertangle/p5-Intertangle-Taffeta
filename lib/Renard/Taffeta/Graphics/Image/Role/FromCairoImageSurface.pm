@@ -20,8 +20,8 @@ See L<Renard::Taffeta::Graphics::Role::CairoRenderable>.
 method render_cairo( (CairoContext) $cr ) {
 	my $img_surface = $self->cairo_image_surface;
 	$cr->set_source_surface($img_surface,
-		$self->position->x,
-		$self->position->y);
+		$self->origin->x,
+		$self->origin->y);
 	$cr->paint;
 }
 

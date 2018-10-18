@@ -50,8 +50,8 @@ See L<Renard::Taffeta::Graphics::Role::SVGRenderable>.
 =cut
 method render_svg( (SVG) $svg ) {
 	$svg->image(
-		x => $self->position->x,
-		y => $self->position->y,
+		x => $self->origin->x,
+		y => $self->origin->y,
 		'-href' => "data:image/png;base64,@{[ encode_base64( $self->data ) ]}",
 	);
 }
@@ -59,6 +59,7 @@ method render_svg( (SVG) $svg ) {
 with qw(
 	Renard::Taffeta::Graphics::Image::Role::FromCairoImageSurface
 	Renard::Taffeta::Graphics::Role::SVGRenderable
+	Renard::Taffeta::Graphics::Role::WithBounds
 );
 
 1;

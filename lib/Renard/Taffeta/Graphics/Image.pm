@@ -4,6 +4,8 @@ package Renard::Taffeta::Graphics::Image;
 
 use Moo;
 
-with qw(Renard::Taffeta::Graphics::Role::WithPosition Renard::Taffeta::Graphics::Role::WithBounds);
+with qw(
+	Renard::Taffeta::Graphics::Role::WithBounds
+);
 
 1;

@@ -20,12 +20,12 @@ plan tests => 3;
 my ($x, $y) = (30, 30);
 my $gfx_png = Renard::Taffeta::Graphics::Image::PNG->new(
 	data => $png_path->slurp_raw,
-	position => Renard::Yarn::Graphene::Point->new( x => $x, y => $y ),
+	origin => Renard::Yarn::Graphene::Point->new( x => $x, y => $y ),
 );
 
 subtest "Attributes" => sub {
-	is $gfx_png->position->x, $x, 'correct x position';
-	is $gfx_png->position->y, $y, 'correct y position';
+	is $gfx_png->origin->x, $x, 'correct x position';
+	is $gfx_png->origin->y, $y, 'correct y position';
 	is $gfx_png->size->width, 32, 'correct width';
 	is $gfx_png->size->height, 32, 'correct height';
 };
@@ -48,7 +48,7 @@ subtest "Render to Cairo" => sub {
 	my $crop_surface = Cairo::ImageSurface->create($format, $width, $height);
 	my $crop_cr = Cairo::Context->create( $crop_surface );
 	$crop_cr->set_source_surface( $surface,
-		-( $gfx_png->position->x ), -( $gfx_png->position->y ) );
+		-( $gfx_png->origin->x ), -( $gfx_png->origin->y ) );
 	$crop_cr->paint;
 
 	is $png_surface->get_data, $crop_surface->get_data,
