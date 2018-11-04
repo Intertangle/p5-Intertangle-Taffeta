@@ -15,13 +15,15 @@ my @modules =
 	keys %{ list_modules( "Renard::Taffeta::Graphics::", { list_modules => 1, recurse => 1 } ) };
 
 for my $module (@modules) {
-	load $module;
-	isa_ok $module, 'Renard::Taffeta::Graphics';
-	DOES_ok $module,
-		'Renard::Taffeta::Graphics::Role::CairoRenderable',
-		'Renard::Taffeta::Graphics::Role::SVGRenderable',
-		'Renard::Taffeta::Graphics::Role::WithTransform',
-	;
+	subtest "$module" => sub {
+		load $module;
+		isa_ok $module, 'Renard::Taffeta::Graphics';
+		DOES_ok $module,
+			'Renard::Taffeta::Graphics::Role::CairoRenderable',
+			'Renard::Taffeta::Graphics::Role::SVGRenderable',
+			'Renard::Taffeta::Graphics::Role::WithTransform',
+		;
+	};
 }
 
 done_testing;
