@@ -32,5 +32,22 @@ classmethod cairo( :$render, :$width, :$height ) {
 	};
 }
 
+classmethod cairo_surface_cotains( :$source_surface, :$sub_surface, :$origin ) {
+	my ($format, $width, $height) = (
+		$sub_surface->get_format,
+		$sub_surface->get_width,
+		$sub_surface->get_height
+	);
+
+	# crop the original PNG out of the surface we rendered to
+	my $crop_surface = Cairo::ImageSurface->create($format, $width, $height);
+	my $crop_cr = Cairo::Context->create( $crop_surface );
+	$crop_cr->set_source_surface( $source_surface,
+		-( $origin->x ), -( $origin->y ) );
+	$crop_cr->paint;
+
+	$sub_surface->get_data eq $crop_surface->get_data;
+}
+
 
 1;

@@ -3,6 +3,8 @@
 use Test::Most;
 
 use lib 't/lib';
+use TestHelper;
+
 use Renard::Incunabula::Devel::TestHelper;
 
 use Renard::Incunabula::Common::Setup;
@@ -31,36 +33,23 @@ subtest "Attributes" => sub {
 };
 
 subtest "Render to Cairo" => sub {
-	require Cairo;
-	my $surface = Cairo::ImageSurface->create('argb32', 100, 100);
-	my $cr = Cairo::Context->create( $surface );
+	my $cairo_data = TestHelper->cairo(
+		render => $gfx_png,
+		width => 100, height => 100  );
 
-	$gfx_png->render_cairo( $cr );
+	my $surface = $cairo_data->{surface};
 
-	my $png_surface = $gfx_png->cairo_image_surface;
-	my ($format, $width, $height) = (
-		$png_surface->get_format,
-		$png_surface->get_width,
-		$png_surface->get_height
-	);
-
-	# crop the original PNG out of the surface we rendered to
-	my $crop_surface = Cairo::ImageSurface->create($format, $width, $height);
-	my $crop_cr = Cairo::Context->create( $crop_surface );
-	$crop_cr->set_source_surface( $surface,
-		-( $gfx_png->origin->x ), -( $gfx_png->origin->y ) );
-	$crop_cr->paint;
-
-	is $png_surface->get_data, $crop_surface->get_data,
-		'the data from the original PNG is in the correct position';
+	ok( TestHelper->cairo_surface_cotains(
+		source_surface => $surface,
+		sub_surface    => $gfx_png->cairo_image_surface,
+		origin         => $gfx_png->origin,
+	), 'the data from the original PNG is in the correct position' );
 };
 
 subtest "Render to SVG" => sub {
-	require SVG;
-	SVG->import;
-	my $svg = SVG->new( width => 100, height => 100 );
-
-	$gfx_png->render_svg( $svg );
+	my $svg = TestHelper->svg(
+		render => $gfx_png,
+		width => 100, height => 100  );
 
 	like $svg->xmlify, qr|data:image/png;base64,iVBORw0KGgo|, 'XML has Base64 encoded PNG';
 };
