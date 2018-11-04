@@ -4,6 +4,8 @@ package Renard::Taffeta::Graphics::Polygon;
 
 use Moo;
 
+extends qw(Renard::Taffeta::Graphics);
+
 use Renard::Incunabula::Common::Types qw(ArrayRef);
 use Renard::Yarn::Types qw(Point);
 use Renard::Taffeta::Types qw(CairoContext SVG);
