@@ -5,6 +5,7 @@ package Renard::Taffeta::Graphics::Role::CairoRenderable;
 use Moo::Role;
 
 use Renard::Taffeta::Types qw(CairoContext);
+use Cairo;
 
 =method render_cairo
 

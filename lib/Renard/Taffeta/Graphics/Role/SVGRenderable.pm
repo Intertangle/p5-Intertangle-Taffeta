@@ -5,6 +5,7 @@ package Renard::Taffeta::Graphics::Role::SVGRenderable;
 use Moo::Role;
 
 use Renard::Taffeta::Types qw(SVG);
+use SVG;
 
 =method render_svg
 
