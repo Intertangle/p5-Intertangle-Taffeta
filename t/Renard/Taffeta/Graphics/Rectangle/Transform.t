@@ -2,14 +2,15 @@
 
 use Test::Most tests => 3;
 use Renard::Incunabula::Common::Setup;
-use Renard::Taffeta::Transform::Affine2D;
 use Renard::Taffeta::Graphics::Rectangle;
 
-subtest "Identity" => sub {
-	my $transform = Renard::Taffeta::Transform::Affine2D->new;
+use Renard::Taffeta::Transform::Affine2D;
+use Renard::Taffeta::Transform::Affine2D::Scaling;
+use Renard::Taffeta::Transform::Affine2D::Translation;
 
+subtest "Identity" => sub {
 	my $rect = Renard::Taffeta::Graphics::Rectangle->new(
-		transform => $transform,
+		transform => Renard::Taffeta::Transform::Affine2D->new,
 		width => 10,
 		height => 20,
 	);
@@ -20,12 +21,10 @@ subtest "Identity" => sub {
 };
 
 subtest "Scale x,y" => sub {
-	my $transform = Renard::Taffeta::Transform::Affine2D->new(
-		matrix_abcdef => { a => 2, d => 3, },
-	);
-
 	my $rect = Renard::Taffeta::Graphics::Rectangle->new(
-		transform => $transform,
+		transform => Renard::Taffeta::Transform::Affine2D::Scaling->new(
+			scale => [ 2, 3 ],
+		),
 		width => 10,
 		height => 20,
 	);
@@ -36,12 +35,10 @@ subtest "Scale x,y" => sub {
 };
 
 subtest "Translate x,y" => sub {
-	my $transform = Renard::Taffeta::Transform::Affine2D->new(
-		matrix_abcdef => { e => 100, f => 200, },
-	);
-
 	my $rect = Renard::Taffeta::Graphics::Rectangle->new(
-		transform => $transform,
+		transform => Renard::Taffeta::Transform::Affine2D::Translation->new(
+			translate => [ 100, 200, ],
+		),
 		width => 10,
 		height => 20,
 	);
