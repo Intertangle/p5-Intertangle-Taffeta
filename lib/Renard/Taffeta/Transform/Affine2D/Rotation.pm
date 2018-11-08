@@ -9,6 +9,14 @@ use Renard::Yarn::Types qw(Point AngleDegrees);
 
 extends qw(Renard::Taffeta::Transform::Affine2D);
 
+=attr angle
+
+Angle in degrees.
+
+Positive value for clockwise rotation and negative for counterclockwise
+rotation.
+
+=cut
 has angle => (
 	is => 'ro',
 	isa => AngleDegrees,
