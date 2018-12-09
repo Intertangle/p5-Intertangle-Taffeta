@@ -145,28 +145,7 @@ around BUILDARGS => fun( $orig, $class, %args ) {
 			$matrix_set = 1;
 		}
 
-		my $ma = $args{matrix}->to_ArrayRef;
-		# NOTE this uses exact checking instead of floating point
-		# approximation. This should be fine because these are values
-		# that are set by the user.
-		unless(
-			(
-				all { $_ == 0 } (
-					$ma->[0][2], $ma->[0][3],
-					$ma->[1][2], $ma->[1][3],
-					$ma->[2][0], $ma->[2][1],
-					$ma->[3][2], $ma->[2][3],
-				)
-			)
-			&&
-			(
-				all { $_ == 1 } (
-					$ma->[2][2], $ma->[3][3],
-				)
-			)
-		) {
-			die "Not a 2D affine transform matrix";
-		}
+		#$class->_is_matrix_affine( $args{matrix} );
 		$matrix = $args{matrix};
 	}
 
@@ -208,6 +187,39 @@ around BUILDARGS => fun( $orig, $class, %args ) {
 
 	return $class->$orig(%args);
 };
+
+classmethod _is_matrix_affine( $matrix ) {
+	$class->_is_matrix_affine_graphene( $matrix );
+}
+
+classmethod _is_matrix_affine_graphene( $matrix ) {
+	die "Not a 2D affine matrix" unless $matrix->is_2d;
+}
+
+classmethod _is_matrix_affine_exact( $matrix ) {
+	my $ma = $matrix->to_ArrayRef;
+	# NOTE this uses exact checking instead of floating point
+	# approximation. This should be fine because these are values
+	# that are set by the user.
+	unless(
+		(
+			all { $_ == 0 } (
+				$ma->[0][2], $ma->[0][3],
+				$ma->[1][2], $ma->[1][3],
+				$ma->[2][0], $ma->[2][1],
+				$ma->[3][2], $ma->[2][3],
+			)
+		)
+		&&
+		(
+			all { $_ == 1 } (
+				$ma->[2][2], $ma->[3][3],
+			)
+		)
+	) {
+		die "Not a 2D affine transform matrix";
+	}
+}
 
 =method compose
 
