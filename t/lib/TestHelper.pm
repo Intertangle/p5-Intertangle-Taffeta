@@ -32,7 +32,7 @@ classmethod cairo( :$render, :$width, :$height ) {
 	};
 }
 
-classmethod cairo_surface_cotains( :$source_surface, :$sub_surface, :$origin ) {
+classmethod cairo_surface_contains( :$source_surface, :$sub_surface, :$origin ) {
 	my ($format, $width, $height) = (
 		$sub_surface->get_format,
 		$sub_surface->get_width,

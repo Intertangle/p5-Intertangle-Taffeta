@@ -39,7 +39,7 @@ subtest "Render to Cairo" => sub {
 
 	my $surface = $cairo_data->{surface};
 
-	ok( TestHelper->cairo_surface_cotains(
+	ok( TestHelper->cairo_surface_contains(
 		source_surface => $surface,
 		sub_surface    => $gfx_png->cairo_image_surface,
 		origin         => $gfx_png->origin,
