@@ -3,6 +3,7 @@ package TestHelper;
 # ABSTRACT: A helper for the tests
 
 use List::AllUtils qw(count_by);
+use Renard::Yarn::Types qw(Point);
 
 classmethod svg( :$render, :$width, :$height ) {
 	require SVG;
@@ -33,6 +34,7 @@ classmethod cairo( :$render, :$width, :$height ) {
 }
 
 classmethod cairo_surface_contains( :$source_surface, :$sub_surface, :$origin ) {
+	$origin = Point->coerce( $origin );
 	my ($format, $width, $height) = (
 		$sub_surface->get_format,
 		$sub_surface->get_width,
