@@ -3,6 +3,7 @@ package Renard::Taffeta::Graphics;
 # ABSTRACT: Base class for graphics object
 
 use Moo;
+use MooX::StrictConstructor;
 
 with qw(
 	Renard::Taffeta::Graphics::Role::CairoRenderable
