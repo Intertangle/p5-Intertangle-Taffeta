@@ -22,6 +22,9 @@ method render_cairo( (CairoContext) $cr ) {
 
 	$cr->set_matrix(
 		$self->transform->cairo_matrix
+		->multiply(
+			$cr->get_matrix
+		)
 	);
 
 	my $img_surface = $self->cairo_image_surface;
