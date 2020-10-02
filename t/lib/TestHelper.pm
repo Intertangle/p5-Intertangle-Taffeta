@@ -3,7 +3,7 @@ package TestHelper;
 # ABSTRACT: A helper for the tests
 
 use List::AllUtils qw(count_by);
-use Renard::Yarn::Types qw(Point);
+use Intertangle::Yarn::Types qw(Point);
 
 classmethod svg( :$render, :$width, :$height ) {
 	require SVG;
