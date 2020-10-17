@@ -24,7 +24,7 @@ has data => (
 method _build_cairo_image_surface() :ReturnType(InstanceOf['Cairo::ImageSurface']) {
 	# read the PNG data in-memory
 	my $img = Cairo::ImageSurface->create_from_png_stream(
-		fun ((Str) $callback_data, (Int) $length) {
+		my $cb = fun ( (Str) $callback_data, (Int) $length ) {
 			state $offset = 0;
 			my $data = substr $callback_data, $offset, $length;
 			$offset += $length;
