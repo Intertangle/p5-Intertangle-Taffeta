@@ -1,3 +1,6 @@
 requires 'Intertangle::Yarn',
 	git => 'https://github.com/Intertangle/p5-Intertangle-Yarn.git',
 	branch => 'master';
+requires 'Intertangle::API::Cairo',
+	git => 'https://github.com/Intertangle/p5-Intertangle-API-Cairo.git',
+	branch => 'master';
